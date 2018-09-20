@@ -399,9 +399,11 @@ uint8_t Plugin_004_DS_reset()
     pinMode(Plugin_004_DallasPin, OUTPUT); digitalWrite(Plugin_004_DallasPin, LOW);
     delayMicroseconds(492);               // Dallas spec. = Min. 480uSec. Arduino 500uSec.
     pinMode(Plugin_004_DallasPin, INPUT); // Float
-    delayMicroseconds(40);
+    delayMicroseconds(40);                // Dallas spec. = Min. 15uSec, Max. 60uSec. Presense pulse = 60-240uSec.
     r = !digitalRead(Plugin_004_DallasPin);
-    delayMicroseconds(420);
+    delayMicroseconds(40);                    //Added delay for presense pulses starting between 40 to 60uSec.
+    r |= !digitalRead(Plugin_004_DallasPin);  //Added read
+    delayMicroseconds(380);                   //Adjusted from 420 because of added 40uSec.
     #if defined(ESP32)
       ESP32interrupts();
     #endif
